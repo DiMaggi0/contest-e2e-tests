@@ -41,7 +41,7 @@ public class Task {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "sent_solution", nullable = false)
+    @Column(name = "sent_solutions", nullable = false)
     private Integer sentSolution;
 
 }

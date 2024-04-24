@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 @EnableJpaRepositories(basePackages = "api.database.repos",
 entityManagerFactoryRef = "contestEntityManagerFactory",
 transactionManagerRef = "contestTransactionManager")
+@EnableConfigurationProperties
 public class ContestDatabaseAutoConfiguration {
     @Bean
     @ConfigurationProperties("datasource.contest")
@@ -44,7 +46,7 @@ public class ContestDatabaseAutoConfiguration {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean contestEntityManagerFactory(@Qualifier("contestBuilder") EntityManagerFactoryBuilder builder) {
+    public LocalContainerEntityManagerFactoryBean contestEntityManagerFactory(@Qualifier("contestBuilder") EntityManagerFactoryBuilder builder, DataSourceProperties dsp) {
         return builder.dataSource(contestDataSource()).packages("api.database.entities").build();
     }
 
