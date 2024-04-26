@@ -1,8 +1,8 @@
 package api.database.entities;
 
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "task")
-public class Task {
+@Table(name = "profile")
+public class Profile {
 
     @Id
     @Column(name = "id", nullable = false, unique = true)
@@ -26,22 +26,13 @@ public class Task {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "points")
+    private Integer points;
 
-    @Column(name = "level")
-    private Integer level;
+    @Column(name = "solved_tasks")
+    private Integer solvedTasks;
 
-    @Column(name = "langs")
-    private String langs;
-
-    @Column(name = "owner_id")
-    private Integer ownerId;
-
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "sent_solutions")
-    private Integer sentSolution;
+    @Column(name = "user_id")
+    private Integer userId;
 
 }

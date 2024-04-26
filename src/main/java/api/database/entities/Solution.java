@@ -1,6 +1,5 @@
 package api.database.entities;
 
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +12,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "task")
-public class Task {
+@Table(name = "solution")
+public class Solution {
 
     @Id
     @Column(name = "id", nullable = false, unique = true)
@@ -26,22 +25,25 @@ public class Task {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "file")
+    private String file;
 
-    @Column(name = "level")
-    private Integer level;
+    @Column(name = "lang")
+    private String lang;
 
-    @Column(name = "langs")
-    private String langs;
+    @Column(name = "points")
+    private Double points;
+
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "task_id")
+    private Integer taskId;
 
     @Column(name = "owner_id")
     private Integer ownerId;
 
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "sent_solutions")
-    private Integer sentSolution;
+    @Column(name = "passed_tests")
+    private Integer passedTests;
 
 }

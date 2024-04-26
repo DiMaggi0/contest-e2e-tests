@@ -1,9 +1,9 @@
 package api.database.repos;
 
-import api.database.entities.Task;
+import api.database.entities.Test;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TaskRepository extends JpaRepository<Task, Integer> {
+public interface TestRepository extends JpaRepository<Test, Integer> {
 }
