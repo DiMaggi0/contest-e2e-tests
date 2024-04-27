@@ -5,6 +5,8 @@ import api.database.entities.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TaskFunctions {
@@ -15,6 +17,10 @@ public class TaskFunctions {
     public Task getTaskByTaskId(Integer taskId) {
         return taskRepository.findById(taskId).orElseThrow(
                 () -> new IllegalArgumentException("Задача с заданным id не существует"));
+    }
+
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll();
     }
 
 }

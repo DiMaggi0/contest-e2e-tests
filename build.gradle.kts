@@ -24,6 +24,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation:2.7.5")
     implementation("org.springframework.boot:spring-boot-starter-aop:2.7.5")
     implementation("org.postgresql:postgresql:42.6.0")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.10.1")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.10.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.10.1")
 
 }
 
