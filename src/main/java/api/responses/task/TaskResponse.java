@@ -21,4 +21,5 @@ public class TaskResponse {
     @JsonProperty(value = "sent_solutions")
     Integer sentSolutions;
 
+    String message;
 }

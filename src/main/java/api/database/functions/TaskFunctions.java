@@ -2,6 +2,7 @@ package api.database.functions;
 
 import api.database.repos.TaskRepository;
 import api.database.entities.Task;
+import io.qameta.allure.Step;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
