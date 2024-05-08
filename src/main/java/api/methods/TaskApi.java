@@ -2,12 +2,13 @@ package api.methods;
 
 import api.requests.task.TaskRequest;
 import api.responses.task.TaskResponse;
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import static api.TestUtils.convertStringtoObject;
+import static api.TestUtils.*;
 import static io.restassured.RestAssured.given;
 
 @Service
@@ -20,27 +21,30 @@ public class TaskApi {
                 .asString(), TaskResponse[].class);
     }
 
+    @Step("Неотображаемый step")
     public Response getTaskById(Integer id) {
         return given()
                 .pathParam("id", id)
                 .get("http://127.0.0.1:8000/api/v1/task/{id}");
     }
 
-    public TaskResponse createNewTask(Integer id, String description, String title, String langs, Integer level, @Nullable String owner) {
-        return convertStringtoObject(given()
-                .header("Authorization", "Token 6cef3f7d3f1ea1aba0d2a3fc6321dd86286fa0e6")
+    @Step("[POST/api/v1/task] Создаем задачу с переданными параметрами")
+    public Response createNewTask(TaskRequest taskRequest) {
+        return given()
+                .header("Authorization", "Token " + getUserAuthToken("dmitry", "12345"))
                 .contentType("application/json")
-                .body(new TaskRequest()
-                        .id(id)
-                        .description(description)
-                        .langs(langs)
-                        .level(level)
-                        .title(title)
-                        .owner(owner)
-                )
-                .post("http://127.0.0.1:8000/api/v1/task/")
-                .asString(), TaskResponse.class);
+                .body(taskRequest)
+                .post("http://127.0.0.1:8000/api/v1/task/");
 
+    }
+
+    @Step("[PUT/api/v1/task/{id}] Изменяем параметры задачи с id = {id}")
+    public Response updateExistingTask(Integer id, TaskRequest taskRequest) {
+        return given()
+                .contentType("application/json")
+                .pathParam("id", id)
+                .body(taskRequest)
+                .put("http://127.0.0.1:8000/api/v1/task/{id}");
     }
 
 

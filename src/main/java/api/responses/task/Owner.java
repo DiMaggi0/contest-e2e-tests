@@ -12,6 +12,9 @@ public class Owner {
 
     Integer points;
 
+    @JsonProperty(value = "created_at")
+    String createdAt;
+
     @JsonProperty(value = "solved_tasks")
     Integer solvedTasks;
 }

@@ -4,6 +4,7 @@ plugins {
     application
     id("io.freefair.lombok") version "6.6.3"
     id("org.springframework.boot") version "2.7.5"
+    //id("io.qameta.allure") version "2.10.0"
 }
 
 
@@ -13,6 +14,13 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
 }
+
+/*allure {
+    version.set("2.10.0")
+    adapter.autoconfigure.set(true)
+}*/
+
+
 
 dependencies {
     implementation("org.projectlombok:lombok:1.18.26")
@@ -32,9 +40,14 @@ dependencies {
     // https://mvnrepository.com/artifact/io.qameta.allure/allure-junit5
     implementation("io.qameta.allure:allure-junit5:2.25.0")
     testImplementation(platform("io.qameta.allure:allure-bom:2.25.0"))
-    // https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
-    // https://mvnrepository.com/artifact/io.qameta.allure/allure-assertj
-    testImplementation("io.qameta.allure:allure-assertj:2.25.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.2.0")
+    testImplementation("org.aspectj:aspectjtools:1.9.8")
+
+
+
+
+
 
 }
 

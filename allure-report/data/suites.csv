@@ -1,2 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Sat May 04 14:27:59 MSK 2024","Sat May 04 14:28:01 MSK 2024","2140","","Методы для получения задач","","task.TaskGetTests","taskGetByIncorrectIdTest","Получение задачи по несуществующему id",""

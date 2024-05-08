@@ -21,7 +21,11 @@ public class TaskFunctions {
     }
 
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+        return taskRepository.findLastCreatedTasks();
+    }
+
+    public void deleteTaskById(Integer id) {
+        taskRepository.deleteById(id);
     }
 
 }

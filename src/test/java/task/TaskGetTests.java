@@ -7,15 +7,17 @@ import api.methods.TaskApi;
 import api.responses.task.TaskResponse;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import static api.TestUtils.convertStringtoObject;
+import static api.TestUtils.generateTaskRequestBody;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,6 +33,20 @@ public class TaskGetTests {
 
     @Autowired
     private TaskApi taskApi;
+
+    private Integer newTaskId;
+
+    @BeforeEach
+    public void createTestingTask() {
+        newTaskId = convertStringtoObject(taskApi.createNewTask(generateTaskRequestBody(
+                1,
+                RandomStringUtils.random(50, true, false),
+                RandomStringUtils.random(15, true, true),
+                "C++|Java",
+                new Random().nextInt(1, 3),
+                null
+        )).asString(), TaskResponse.class).getId();
+    }
 
     @Test
     @DisplayName("Получение списка всех задач")
@@ -76,9 +92,9 @@ public class TaskGetTests {
     @DisplayName("Получение информации о задаче по ее id")
     public void TaskGetByIdTest() {
 
-        var givenTask = step("GIVEN: Получена задача с определенным id", () -> convertStringtoObject(taskApi.getTaskById(1).asString(), TaskResponse.class));
+        var givenTask = step("GIVEN: Получена задача с определенным id", () -> convertStringtoObject(taskApi.getTaskById(newTaskId).asString(), TaskResponse.class));
 
-        var databaseGivenTask = step("WHEN: Получена запись из таблицы task с id = 1", () -> taskFunctions.getTaskByTaskId(1));
+        var databaseGivenTask = step("WHEN: Получена запись из таблицы task с id = " + newTaskId, () -> taskFunctions.getTaskByTaskId(newTaskId));
 
         step("THEN: Параметры полученной задачи соответствуют ожидаемым",
                 () -> assertAll(
@@ -115,13 +131,23 @@ public class TaskGetTests {
     @Test
     @DisplayName("Получение задачи по несуществующему id")
     public void taskGetByIncorrectIdTest() {
-        var givenTask = step("WHEN: Попытка получить задачу по несуществующему id завершается ошибкой", () -> taskApi.getTaskById(10000));
+
+        var givenTask = step("WHEN: Попытка получить задачу по несуществующему id завершается ошибкой",
+                () -> taskApi.getTaskById(new Random().nextInt(1000, 2000)));
 
         step("THEN: Параметры полученной ошибки соответствуют ожидаемым",
                 () -> assertAll(
-                        () -> step("Код ошибки равен полученному коду", () -> assertEquals(givenTask.getStatusCode(), 404)),
-                        () -> step("Сообщение об ошибке соответствует ожидаемому", () -> assertTrue(givenTask.getBody().asPrettyString().contains("The item does not exist")))
-                ));
+                        () -> step("Код ошибки равен полученному коду",
+                                () -> assertEquals(givenTask.getStatusCode(), 404)),
 
+                        () -> step("Сообщение об ошибке соответствует ожидаемому",
+                                () -> assertTrue(givenTask.getBody().asPrettyString()
+                                        .contains("The item does not exist")))
+                ));
+    }
+
+    @AfterEach
+    public void deleteCreatedTask() {
+        taskFunctions.deleteTaskById(newTaskId);
     }
 }
