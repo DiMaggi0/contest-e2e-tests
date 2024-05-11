@@ -8,10 +8,15 @@ import lombok.Setter;
 public class TaskRequest {
 
     private Integer id;
+
     private String description;
+
     private String langs;
+
     private Integer level;
+
     private String title;
+
     private String owner;
 
     public TaskRequest id(Integer id) {
@@ -48,6 +53,5 @@ public class TaskRequest {
     public String toString() {
         return String.format("{\"id\": %d, \"title\": \"%s\", \"description\": \"%s\", \"level\": \"%s\", \"langs\": \"%s\", \"owner\": null}", id, title, description, level, langs);
     }
-
 
 }

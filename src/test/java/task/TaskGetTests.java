@@ -5,6 +5,7 @@ import api.database.entities.Task;
 import api.database.functions.TaskFunctions;
 import api.methods.TaskApi;
 import api.responses.task.TaskResponse;
+import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -23,9 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = { ContestDatabaseAutoConfiguration.class, TaskApi.class })
 @ActiveProfiles(profiles = "test")
+@TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 @Epic("Task API")
 @Feature("Task GET")
-@DisplayName("Тесты на получение задач")
+@DisplayName("Тесты на получение информации о задаче")
 public class TaskGetTests {
 
     @Autowired
@@ -36,7 +38,7 @@ public class TaskGetTests {
 
     private Integer newTaskId;
 
-    @BeforeEach
+    @BeforeAll
     public void createTestingTask() {
         newTaskId = convertStringtoObject(taskApi.createNewTask(generateTaskRequestBody(
                 1,
@@ -45,11 +47,12 @@ public class TaskGetTests {
                 "C++|Java",
                 new Random().nextInt(1, 3),
                 null
-        )).asString(), TaskResponse.class).getId();
+        ), "dmitry", "12345").asString(), TaskResponse.class).getId();
     }
 
     @Test
     @DisplayName("Получение списка всех задач")
+    @Description("GET /api/v1/task")
     public void TaskGetTest() {
 
         var taskList = step("GIVEN: Получен список задач", () -> taskApi.getTasksList());
@@ -90,6 +93,7 @@ public class TaskGetTests {
 
     @Test
     @DisplayName("Получение информации о задаче по ее id")
+    @Description("GET /api/v1/task")
     public void TaskGetByIdTest() {
 
         var givenTask = step("GIVEN: Получена задача с определенным id", () -> convertStringtoObject(taskApi.getTaskById(newTaskId).asString(), TaskResponse.class));
@@ -130,10 +134,11 @@ public class TaskGetTests {
     }
     @Test
     @DisplayName("Получение задачи по несуществующему id")
+    @Description("GET /api/v1/task")
     public void taskGetByIncorrectIdTest() {
 
         var givenTask = step("WHEN: Попытка получить задачу по несуществующему id завершается ошибкой",
-                () -> taskApi.getTaskById(new Random().nextInt(1000, 2000)));
+                () -> taskApi.getTaskById(newTaskId + 10));
 
         step("THEN: Параметры полученной ошибки соответствуют ожидаемым",
                 () -> assertAll(
@@ -146,7 +151,7 @@ public class TaskGetTests {
                 ));
     }
 
-    @AfterEach
+    @AfterAll
     public void deleteCreatedTask() {
         taskFunctions.deleteTaskById(newTaskId);
     }

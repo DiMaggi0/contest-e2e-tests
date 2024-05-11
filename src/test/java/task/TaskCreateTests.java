@@ -5,13 +5,13 @@ import api.database.functions.TaskFunctions;
 import api.methods.TaskApi;
 import api.requests.task.TaskRequest;
 import api.responses.task.TaskResponse;
+import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Param;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Epic("Task API")
 @Feature("Task POST")
 @DisplayName("Тесты на создание задач")
-public class TaskCreateTest {
+public class TaskCreateTests {
     @Autowired
     private TaskApi taskApi;
 
@@ -54,7 +54,7 @@ public class TaskCreateTest {
                 )),
                 Arguments.of(generateTaskRequestBody(
                         1,
-                        null,
+                        "",
                         RandomStringUtils.random(15, true, true),
                         "C++|Java",
                         new Random().nextInt(1, 3),
@@ -63,7 +63,7 @@ public class TaskCreateTest {
                 Arguments.of(generateTaskRequestBody(
                         1,
                         RandomStringUtils.random(50, true, false),
-                        null,
+                        "",
                         "C++|Java",
                         new Random().nextInt(1, 3),
                         null
@@ -72,7 +72,7 @@ public class TaskCreateTest {
                         1,
                         RandomStringUtils.random(50, true, false),
                         RandomStringUtils.random(15, true, true),
-                        null,
+                        "Java",
                         new Random().nextInt(1, 3),
                         null
                 )),
@@ -86,9 +86,9 @@ public class TaskCreateTest {
                 )),
                 Arguments.of(generateTaskRequestBody(
                         null,
-                        null,
-                        null,
-                        null,
+                        "",
+                        "",
+                        "Java",
                         new Random().nextInt(1, 3),
                         null
                 ))
@@ -97,10 +97,11 @@ public class TaskCreateTest {
     @ParameterizedTest(name = "Тело запроса - {0}")
     @MethodSource("getTaskRequestBody")
     @DisplayName("Создаем задачу с различным набором аргументов")
+    @Description("POST /api/v1/task")
     public void createNewTaskTest(@Param("Тело запроса на создание задачи") TaskRequest taskRequest) {
 
         var createdTask = step("GIVEN: Создана задача со всеми необходимыми параметрами",
-                () -> convertStringtoObject(taskApi.createNewTask(taskRequest).asString(), TaskResponse.class));
+                () -> convertStringtoObject(taskApi.createNewTask(taskRequest, "dmitry", "12345").asString(), TaskResponse.class));
 
         var givenDatabaseTask = step("WHEN: Получена информация о задаче из таблицы task",
                 () -> taskFunctions.getTaskByTaskId(createdTask.getId()));
@@ -141,20 +142,50 @@ public class TaskCreateTest {
                 ));
     }
 
-    @Test
-    @DisplayName("Попытка создать задачу без параметра level")
-    public void createTaskWithoutLevel() {
+    public static List<Arguments> getTaskRequestBodyWithNullParameters() {
+        return List.of(
+                Arguments.of(generateTaskRequestBody(
+                        1,
+                        RandomStringUtils.random(50, true, false),
+                        RandomStringUtils.random(15, true, true),
+                        "C++|Java",
+                        null,
+                        null
+                )),
+                Arguments.of(generateTaskRequestBody(
+                        1,
+                        RandomStringUtils.random(50, true, false),
+                        RandomStringUtils.random(15, true, true),
+                        null,
+                        new Random().nextInt(1, 3),
+                        null
+                )),
+                Arguments.of(generateTaskRequestBody(
+                        1,
+                        null,
+                        RandomStringUtils.random(15, true, true),
+                        "Java",
+                        new Random().nextInt(1, 3),
+                        null
+                )),
+                Arguments.of(generateTaskRequestBody(
+                        1,
+                        RandomStringUtils.random(50, true, false),
+                        null,
+                        "Java",
+                        new Random().nextInt(1, 3),
+                        null
+                ))
+        );
+    }
+    @ParameterizedTest(name = "body - {0}")
+    @MethodSource("getTaskRequestBodyWithNullParameters")
+    @DisplayName("Попытка создать задачу с параметрами =  null")
+    @Description("POST /api/v1/task")
+     public void createTaskWithNullParameters(@Param("Тело запроса") TaskRequest taskRequest) {
 
         var createdTask = step("GIVEN: Попытка создания задачи без параметра level",
-                () -> taskApi.createNewTask(
-                        new TaskRequest()
-                                .id(1)
-                                .description(RandomStringUtils.random(50, true, false))
-                                .title(RandomStringUtils.random(15, true, true))
-                                .langs("C++|Java")
-                                .level(null)
-                                .owner(null)
-                ));
+                () -> taskApi.createNewTask(taskRequest, "dmitry", "12345"));
 
         step("THEN: Параметры полученной ошибки соответствуют ожидаемым",
                 () -> assertAll(

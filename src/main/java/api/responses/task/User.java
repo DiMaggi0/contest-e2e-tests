@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class User {
 
-    Integer id;
+    private Integer id;
 
-    String username;
+    private String username;
 
-    String email;
+    private String email;
 
 }

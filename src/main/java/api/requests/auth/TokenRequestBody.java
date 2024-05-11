@@ -8,6 +8,7 @@ import lombok.Setter;
 public class TokenRequestBody {
 
     private String username;
+
     private String password;
 
     public TokenRequestBody username(String username) {
@@ -19,4 +20,5 @@ public class TokenRequestBody {
         this.password = password;
         return this;
     }
+
 }

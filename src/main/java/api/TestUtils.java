@@ -33,7 +33,7 @@ public class TestUtils {
     }
 
     public static String getUserAuthToken(String username, String password) {
-        return convertStringtoObject(given()
+        return "Token " + convertStringtoObject(given()
                 .contentType("application/json")
                 .body(new TokenRequestBody()
                         .username(username)

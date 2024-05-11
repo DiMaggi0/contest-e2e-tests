@@ -6,20 +6,21 @@ import lombok.Getter;
 @Getter
 public class TaskResponse {
 
-    Integer id;
+    private Integer id;
 
-    String title;
+    private String title;
 
-    String description;
+    private String description;
 
-    Integer level;
+    private Integer level;
 
-    String langs;
+    private String langs;
 
-    Owner owner;
+    private Owner owner;
 
     @JsonProperty(value = "sent_solutions")
-    Integer sentSolutions;
+    private Integer sentSolutions;
 
-    String message;
+    private String message;
+
 }

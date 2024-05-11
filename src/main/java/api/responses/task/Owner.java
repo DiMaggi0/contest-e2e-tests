@@ -6,15 +6,16 @@ import lombok.Getter;
 @Getter
 public class Owner {
 
-    Integer id;
+    private Integer id;
 
-    User user;
+    private User user;
 
-    Integer points;
+    private Integer points;
 
     @JsonProperty(value = "created_at")
-    String createdAt;
+    private String createdAt;
 
     @JsonProperty(value = "solved_tasks")
-    Integer solvedTasks;
+    private Integer solvedTasks;
+
 }
