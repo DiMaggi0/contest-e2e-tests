@@ -27,8 +27,7 @@ import java.util.Random;
 import static api.TestUtils.convertStringtoObject;
 import static api.TestUtils.generateTaskRequestBody;
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = { ContestDatabaseAutoConfiguration.class, TestApi.class, TaskApi.class })
 @ActiveProfiles(profiles = "test")
@@ -107,6 +106,39 @@ public class TestPostTests {
     @Description("POST /api/v1/test")
     public void createTestsToTaskWithExistingTests() {
 
+        var createdTests = step("GIVEN: Сформировано тело запроса с созданными тестами",
+                () -> new TestRequest()
+                        .taskId(newTaskId)
+                        .tests(List.of("1", "2", "3", "4"))
+        );
+        var testCreatedCount = step("AND: Получено созданное количество тестов к задаче",
+                () -> convertStringtoObject(testApi.createTests(createdTests, "dmitry", "12345")
+                        .asString(), CreatedTests.class));
+
+        var alreadyExistingTests = step("WHEN: Выполнен повторный запрос на создание таких же тестов",
+                () -> convertStringtoObject(testApi.createTests(createdTests, "dmitry", "12345")
+                        .asString(), CreatedTests.class));
+
+        var createdDatabaseTests = step("AND: Получены все созданные тесты из таблицы task",
+                () -> testFunctions.getTestsByTaskId(newTaskId));
+
+        step("THEN: Параметры созданных тестов соответствуют ожидаемым",
+                () -> assertAll(
+
+                        () -> step("Количество созданных тестов соответствует полученному из базы значению",
+                                () -> assertEquals(testCreatedCount.getTestsCreated() + alreadyExistingTests.getTestsCreated(),
+                                        createdDatabaseTests.size())),
+
+                        () -> step("Input полученных тестов соответствует значению из базы",
+                                () -> assertEquals(createdTests.getTests().stream().map(NewTest::getInput).sorted().toList(),
+                                        createdDatabaseTests.stream().map(api.database.entities.Test::getInput).distinct().sorted().toList())),
+
+                        () -> step("Output полученных тестов соответствует значению из базы",
+                                () -> assertEquals(createdTests.getTests().stream().map(NewTest::getOutput).sorted().toList(),
+                                        createdDatabaseTests.stream().map(api.database.entities.Test::getOutput).distinct().sorted().toList()))
+                ));
+
+
     }
 
     @Test
@@ -114,6 +146,25 @@ public class TestPostTests {
     @Description("POST /api/v1/test")
     public void createTestsToNonExistingTask() {
 
+        var createdTests = step("GIVEN: Сформировано тело запроса с созданными тестами и несуществующим taskId",
+                () -> new TestRequest()
+                        .taskId(newTaskId + 10)
+                        .tests(List.of("1", "2", "3", "4"))
+        );
+
+        var testCreatedCount = step("WHEN: Попытка получения созданного количества тестов к задаче",
+                () -> testApi.createTests(createdTests, "dmitry", "12345"));
+
+        step("THEN: Параметры полученной ошибки соответствуют ожидаемым",
+                () -> assertAll(
+
+                        () -> step("Код ошибки равен полученному коду",
+                                () -> assertEquals(testCreatedCount.getStatusCode(), 500)),
+
+                        () -> step("Сообщение об ошибке соответствует ожидаемому",
+                                () -> assertTrue(testCreatedCount.getBody().asPrettyString()
+                                        .contains("TaskModel matching query does not exist.")))
+                ));
     }
 
     @Test
@@ -121,6 +172,25 @@ public class TestPostTests {
     @Description("POST /api/v1/test")
     public void createTestsWithNullParameters() {
 
+        var createdTests = step("GIVEN: Сформировано тело запроса с параметрами = null",
+                () -> new TestRequest()
+                        .taskId(null)
+                        .tests(List.of())
+        );
+
+        var testCreatedCount = step("WHEN: Попытка получения созданного количества тестов к задаче",
+                () -> testApi.createTests(createdTests, "dmitry", "12345"));
+
+        step("THEN: Параметры полученной ошибки соответствуют ожидаемым",
+                () -> assertAll(
+
+                        () -> step("Код ошибки равен полученному коду",
+                                () -> assertEquals(testCreatedCount.getStatusCode(), 500)),
+
+                        () -> step("Сообщение об ошибке соответствует ожидаемому",
+                                () -> assertTrue(testCreatedCount.getBody().asPrettyString()
+                                        .contains("TaskModel matching query does not exist.")))
+                ));
     }
 
     @AfterEach

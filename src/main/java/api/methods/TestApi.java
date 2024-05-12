@@ -1,11 +1,14 @@
 package api.methods;
 
+import api.database.entities.Test;
 import api.requests.test.TestRequest;
 import api.responses.test.TestResponse;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static api.TestUtils.convertStringtoObject;
 import static api.TestUtils.getUserAuthToken;
@@ -31,8 +34,13 @@ public class TestApi {
                 .post("http://127.0.0.1:8000/api/v1/test/");
     }
 
-    /*@Step("[PUT /api/v1/test/?task_id={taskId}] ОБновляем тесты у задачи")
-    public Response updateTests() {
-        return given();
-    }*/
+    @Step("[PUT /api/v1/test/?task_id={taskId}] ОБновляем тесты у задачи")
+    public Response updateTests(Integer taskId, TestResponse[] updateTestsBody, String username, String password) {
+        return given()
+                .pathParam("task_id", taskId)
+                .header("Authorization", getUserAuthToken(username, password))
+                .body(updateTestsBody)
+                .contentType("application/json")
+                .put("http://127.0.0.1:8000/api/v1/test/{task_id}/");
+    }
 }
