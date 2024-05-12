@@ -20,10 +20,10 @@ public class Solution {
     private Integer id;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private String updatedAt;
 
     @Column(name = "file")
     private String file;

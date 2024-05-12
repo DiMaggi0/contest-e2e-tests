@@ -5,14 +5,15 @@ import api.database.repos.SolutionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SolutionFunctions {
 
     private final SolutionRepository solutionRepository;
 
-    public Solution getSolutionById(Integer id) {
-        return solutionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Решение с заданным id не найдено"));
+    public List<Solution> getTaskSolutionsByTaskId(Integer taskId) {
+        return solutionRepository.findAllByTaskId(taskId);
     }
 }

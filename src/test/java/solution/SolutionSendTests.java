@@ -3,12 +3,17 @@ package solution;
 import api.database.ContestDatabaseAutoConfiguration;
 import api.database.functions.SolutionFunctions;
 import api.methods.SolutionApi;
+import api.requests.solution.SolutionRequest;
+import api.responses.solution.SendSolutionResponse;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.io.File;
 
 @SpringBootTest(classes = { ContestDatabaseAutoConfiguration.class, SolutionApi.class })
 @ActiveProfiles(profiles = "test")
@@ -22,4 +27,12 @@ public class SolutionSendTests {
 
     @Autowired
     private SolutionApi solutionApi;
+
+    @Test
+    public void f() {
+        System.out.println(solutionApi.sendTaskSolution(new SolutionRequest().file(new File("src/test/resources/Solution.java"))
+                .lang("Java")
+                .taskId(251), "dmitry", "12345").getBody().as(SendSolutionResponse.class));
+
+    }
 }

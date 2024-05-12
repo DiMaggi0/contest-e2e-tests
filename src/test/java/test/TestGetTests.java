@@ -70,7 +70,7 @@ public class TestGetTests {
     public void getTaskTests() {
 
         var createdTests = step("GIVEN: Получены тесты у созданной задачи",
-                ()  -> convertStringtoObject(testApi.getTaskTests(newTaskId).asString(), TestResponse[].class));
+                ()  -> testApi.getTaskTests(newTaskId).getBody().as(TestResponse[].class));
 
         var createdDatabaseTests = step("WHEN: Получены тесты к созданной задаче из таблицы test",
                 () -> testFunctions.getTestsByTaskId(newTaskId));
