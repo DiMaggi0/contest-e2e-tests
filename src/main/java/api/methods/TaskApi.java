@@ -7,7 +7,7 @@ import io.restassured.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static api.TestUtils.*;
+import static api.TestUtils.getUserAuthToken;
 import static io.restassured.RestAssured.given;
 
 @Service
@@ -15,9 +15,9 @@ import static io.restassured.RestAssured.given;
 public class TaskApi {
 
     public TaskResponse[] getTasksList() {
-        return convertStringtoObject(given()
+        return given()
                 .get("http://127.0.0.1:8000/api/v1/task/")
-                .asString(), TaskResponse[].class);
+                .getBody().as(TaskResponse[].class);
     }
 
     @Step("Неотображаемый step")

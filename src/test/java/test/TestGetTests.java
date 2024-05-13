@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static api.TestUtils.convertStringtoObject;
 import static api.TestUtils.generateTaskRequestBody;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,14 +49,14 @@ public class TestGetTests {
 
     @BeforeEach
     public void createTaskAndTests() {
-        newTaskId = convertStringtoObject(taskApi.createNewTask(generateTaskRequestBody(
+        newTaskId = taskApi.createNewTask(generateTaskRequestBody(
                 1,
                 RandomStringUtils.random(50, true, false),
                 RandomStringUtils.random(15, true, true),
                 "C++|Java",
                 new Random().nextInt(1, 3),
                 null
-        ), "dmitry", "12345").asString(), TaskResponse.class).getId();
+        ), "dmitry", "12345").getBody().as(TaskResponse.class).getId();
 
         testApi.createTests(new TestRequest()
                 .taskId(newTaskId)

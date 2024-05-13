@@ -17,7 +17,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Arrays;
 import java.util.Random;
 
-import static api.TestUtils.convertStringtoObject;
 import static api.TestUtils.generateTaskRequestBody;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,14 +39,14 @@ public class TaskGetTests {
 
     @BeforeAll
     public void createTestingTask() {
-        newTaskId = convertStringtoObject(taskApi.createNewTask(generateTaskRequestBody(
+        newTaskId = taskApi.createNewTask(generateTaskRequestBody(
                 1,
                 RandomStringUtils.random(50, true, false),
                 RandomStringUtils.random(15, true, true),
                 "C++|Java",
                 new Random().nextInt(1, 3),
                 null
-        ), "dmitry", "12345").asString(), TaskResponse.class).getId();
+        ), "dmitry", "12345").getBody().as(TaskResponse.class).getId();
     }
 
     @Test
@@ -96,7 +95,7 @@ public class TaskGetTests {
     @Description("GET /api/v1/task")
     public void TaskGetByIdTest() {
 
-        var givenTask = step("GIVEN: Получена задача с определенным id", () -> convertStringtoObject(taskApi.getTaskById(newTaskId).asString(), TaskResponse.class));
+        var givenTask = step("GIVEN: Получена задача с определенным id", () -> taskApi.getTaskById(newTaskId).getBody().as(TaskResponse.class));
 
         var databaseGivenTask = step("WHEN: Получена запись из таблицы task с id = " + newTaskId, () -> taskFunctions.getTaskByTaskId(newTaskId));
 

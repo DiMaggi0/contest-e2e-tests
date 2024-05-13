@@ -20,7 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.Random;
 
-import static api.TestUtils.convertStringtoObject;
 import static api.TestUtils.generateTaskRequestBody;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,14 +48,14 @@ public class TestUpdateTests {
 
     @BeforeEach
     public void createTestingTask() {
-        newTaskId = convertStringtoObject(taskApi.createNewTask(generateTaskRequestBody(
+        newTaskId = taskApi.createNewTask(generateTaskRequestBody(
                 1,
                 RandomStringUtils.random(50, true, false),
                 RandomStringUtils.random(15, true, true),
                 "C++|Java",
                 new Random().nextInt(1, 3),
                 null
-        ), "dmitry", "12345").asString(), TaskResponse.class).getId();
+        ), "dmitry", "12345").getBody().as(TaskResponse.class).getId();
 
         testApi.createTests(new TestRequest()
                 .taskId(newTaskId)
@@ -69,7 +68,7 @@ public class TestUpdateTests {
     public void updateExistingTests() {
 
         var givenTests = step("GIVEN: Получены тесты созданной задачи",
-                () -> convertStringtoObject(testApi.getTaskTests(newTaskId).asString(), TestResponse[].class));
+                () -> testApi.getTaskTests(newTaskId).getBody().as(TestResponse[].class));
 
         step("AND: Значения input и output тестов изменены",
                 () -> {
@@ -129,7 +128,7 @@ public class TestUpdateTests {
     public void updateExistingTestsByNotCreatorTaskUser() {
 
         var givenTests = step("GIVEN: Получены тесты созданной задачи",
-                () -> convertStringtoObject(testApi.getTaskTests(newTaskId).asString(), TestResponse[].class));
+                () -> testApi.getTaskTests(newTaskId).getBody().as(TestResponse[].class));
 
         step("AND: Значения input и output тестов изменены",
                 () -> {
@@ -160,7 +159,7 @@ public class TestUpdateTests {
     public void updateTestsWithNullParameters() {
 
         var givenTests = step("GIVEN: Получены тесты созданной задачи",
-                () -> convertStringtoObject(testApi.getTaskTests(newTaskId).asString(), TestResponse[].class));
+                () -> testApi.getTaskTests(newTaskId).getBody().as(TestResponse[].class));
 
         step("AND: Значения input и output тестов изменены",
                 () -> {

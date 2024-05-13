@@ -8,9 +8,6 @@ import io.restassured.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-import static api.TestUtils.convertStringtoObject;
 import static api.TestUtils.getUserAuthToken;
 import static io.restassured.RestAssured.given;
 

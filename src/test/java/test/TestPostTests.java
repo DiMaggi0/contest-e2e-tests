@@ -24,7 +24,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.Random;
 
-import static api.TestUtils.convertStringtoObject;
 import static api.TestUtils.generateTaskRequestBody;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,14 +51,14 @@ public class TestPostTests {
 
     @BeforeEach
     public void createTestingTask() {
-        newTaskId = convertStringtoObject(taskApi.createNewTask(generateTaskRequestBody(
+        newTaskId = taskApi.createNewTask(generateTaskRequestBody(
                 1,
                 RandomStringUtils.random(50, true, false),
                 RandomStringUtils.random(15, true, true),
                 "C++|Java",
                 new Random().nextInt(1, 3),
                 null
-        ), "dmitry", "12345").asString(), TaskResponse.class).getId();
+        ), "dmitry", "12345").getBody().as(TaskResponse.class).getId();
     }
 
     @Test
@@ -74,8 +73,8 @@ public class TestPostTests {
         );
 
         var testCreatedCount = step("WHEN: Получено созданное количество тестов к задаче",
-                () -> convertStringtoObject(testApi.createTests(createdTests, "dmitry", "12345")
-                        .asString(), CreatedTests.class));
+                () -> testApi.createTests(createdTests, "dmitry", "12345")
+                        .getBody().as(CreatedTests.class));
 
         var databaseTests = step("AND: Получены созданные тесты из таблицы test",
                 () -> testFunctions.getTestsByTaskId(newTaskId));
@@ -112,12 +111,12 @@ public class TestPostTests {
                         .tests(List.of("1", "2", "3", "4"))
         );
         var testCreatedCount = step("AND: Получено созданное количество тестов к задаче",
-                () -> convertStringtoObject(testApi.createTests(createdTests, "dmitry", "12345")
-                        .asString(), CreatedTests.class));
+                () -> testApi.createTests(createdTests, "dmitry", "12345")
+                        .getBody().as(CreatedTests.class));
 
         var alreadyExistingTests = step("WHEN: Выполнен повторный запрос на создание таких же тестов",
-                () -> convertStringtoObject(testApi.createTests(createdTests, "dmitry", "12345")
-                        .asString(), CreatedTests.class));
+                () -> testApi.createTests(createdTests, "dmitry", "12345")
+                        .getBody().as(CreatedTests.class));
 
         var createdDatabaseTests = step("AND: Получены все созданные тесты из таблицы task",
                 () -> testFunctions.getTestsByTaskId(newTaskId));

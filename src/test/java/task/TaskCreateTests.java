@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
-import static api.TestUtils.convertStringtoObject;
 import static api.TestUtils.generateTaskRequestBody;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -101,7 +100,7 @@ public class TaskCreateTests {
     public void createNewTaskTest(@Param("Тело запроса на создание задачи") TaskRequest taskRequest) {
 
         var createdTask = step("GIVEN: Создана задача со всеми необходимыми параметрами",
-                () -> convertStringtoObject(taskApi.createNewTask(taskRequest, "dmitry", "12345").asString(), TaskResponse.class));
+                () -> taskApi.createNewTask(taskRequest, "dmitry", "12345").getBody().as(TaskResponse.class));
 
         var givenDatabaseTask = step("WHEN: Получена информация о задаче из таблицы task",
                 () -> taskFunctions.getTaskByTaskId(createdTask.getId()));

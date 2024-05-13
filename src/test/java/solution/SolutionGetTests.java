@@ -16,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 
-import static api.TestUtils.convertStringtoObject;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,8 +38,7 @@ public class SolutionGetTests {
     public void getTaskSolutions() {
 
         var givenSolutions = step("GIVEN: Получены отправленные решения к задаче",
-                () -> convertStringtoObject(solutionApi
-                        .getTaskSolutions(251).asString(), SolutionResponse[].class));
+                () -> solutionApi.getTaskSolutions(251).getBody().as(SolutionResponse[].class));
 
         var givenDatabaseSolutions = step("WHEN: Получены решения к данной задаче из таблицы solution",
                 () -> solutionFunctions.getTaskSolutionsByTaskId(251));
@@ -79,8 +77,8 @@ public class SolutionGetTests {
     @Description("GET /api/v1/solution/?task_id={taskId}")
     public void getTaskNonExistingSolutions() {
         var givenSolutions = step("GIVEN: Получаем все отправленные решения к задаче",
-                () -> convertStringtoObject(solutionApi.getTaskSolutions(24)
-                        .asString(), SolutionResponse[].class));
+                () -> solutionApi.getTaskSolutions(24)
+                        .getBody().as(SolutionResponse[].class));
 
         var givenDatabaseSolutions = step("AND: Получаем все существующие решения из таблицы solution",
                 () -> solutionFunctions.getTaskSolutionsByTaskId(24));
