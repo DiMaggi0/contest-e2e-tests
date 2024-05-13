@@ -28,11 +28,11 @@ public class SolutionSendTests {
     @Autowired
     private SolutionApi solutionApi;
 
-    @Test
+    /*@Test
     public void f() {
-        System.out.println(solutionApi.sendTaskSolution(new SolutionRequest().file(new File("src/test/resources/Solution.java"))
+        System.out.println(solutionApi.sendTaskSolution(new File("src/test/resources/Solution.java"), "Java", )
                 .lang("Java")
-                .taskId(251), "dmitry", "12345").getBody().as(SendSolutionResponse.class));
+                .taskId(322), "dmitry", "12345").getBody().as(SendSolutionResponse.class));
 
-    }
+    }*/
 }

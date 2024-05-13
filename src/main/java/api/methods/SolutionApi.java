@@ -24,13 +24,13 @@ public class SolutionApi {
     }
 
     @Step("[POST /api/v1/solution] Отправляем решение к задаче")
-    public Response sendTaskSolution(SolutionRequest solutionRequest, String username, String password) {
+    public Response sendTaskSolution(File file, String lang, Integer taskId, String username, String password) {
         return given()
                 .contentType("multipart/form-data")
                 .header("Authorization", getUserAuthToken(username, password))
-                .multiPart("file", new File("src/test/resources/Solution.java"))
-                .multiPart("lang", "Java")
-                .multiPart("task_id",251)
+                .multiPart("file", file)
+                .multiPart("lang", lang)
+                .multiPart("task_id",taskId)
                 .relaxedHTTPSValidation()
                 .post("http://127.0.0.1:8000/api/v1/solution/");
     }
